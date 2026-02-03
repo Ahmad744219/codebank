@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="en" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple Car Tax — Static</title>
+  <style>
+/* styles.css - Gold Theme Design (inlined, from your index.php) */
+:root {
+  --bg: #0f1720;
+  --muted: #5b6b6f;
+  --gold-1: #ffd83b;
+  --gold-2: #f2c23a;
+  --gold-3: #e3a617;
+  --card-white: #ffffff;
+  --text-dark: #071218;
+  --wa-green: #25D366;
+  --gap: 12px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: "Noto Sans Arabic", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, #0b1220 0%, #0f1720 100%);
+  color: #e6eef6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  direction: rtl;
+}
+a { color: whitesmoke; text-decoration: none; }
+
+/* Top bar */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+.brand { display:flex; align-items:center; gap:10px; min-width:0; flex:1;}
+.brand h1 { font-size: 1.1rem; margin:0; font-weight:700; white-space:nowrap; color:var(--gold-1); }
+.menu-toggle { display:none; }
+
+/* Horizontal Navigation */
+.horizontal-nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 12px;
+  background: transparent;
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.horizontal-nav-container { display:flex; align-items:center; gap:1rem; width:100%; }
+.horizontal-nav h2 { font-size:1rem; font-weight:600; color:var(--gold-1); white-space:nowrap; margin:0; }
+
+.cars-scroll-container { flex:1; overflow-x:auto; padding:0.5rem 0; }
+.car-list { display:flex; gap:0.5rem; list-style:none; padding:0; margin:0; min-width: min-content; }
+.car-link {
+  display:block; padding:8px 16px; text-decoration:none; color:var(--gold-1);
+  background: rgba(255,255,255,0.05); border-radius:8px; transition: all 0.3s ease;
+  font-weight:600; white-space:nowrap; text-align:center; flex-shrink:0;
+  border: 1px solid rgba(255,215,59,0.2); font-size:0.95rem;
+}
+.car-link:hover {
+  background: rgba(255,215,59,0.15); color:var(--gold-1); transform: translateY(-2px);
+  border-color: var(--gold-2); box-shadow: 0 4px 12px rgba(255,215,59,0.2);
+}
+.car-link.active {
+  background: var(--gold-3); color: var(--text-dark); font-weight:700;
+  border-color: var(--gold-3); box-shadow: 0 6px 20px rgba(227,166,23,0.4); transform: translateY(-1px);
+}
+
+/* Main Content */
+.main-content { padding: 16px; padding-bottom: 120px; max-width: 1300px; margin: 0 auto; }
+.content { width: 100%; }
+
+/* ===== HERO / AD CARD ===== */
+.hero { display:flex; justify-content:center; padding:28px 16px; }
+.ad-container {
+  width: 100%; max-width: 980px; direction: rtl; border-radius: 14px; overflow: hidden;
+  display: grid; grid-template-columns: 1fr 420px; gap: 18px; position: relative;
+  transform: translateY(0); background: linear-gradient(180deg, var(--gold-1) 0%, var(--gold-2) 40%, #f7e3a1 100%);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.12); border: 1px solid rgba(227,166,23,0.16); color: var(--text-dark);
+  padding: 18px;
+}
+
+/* Banner Ad inside ad-container */
+.banner-ad {
+  grid-column: 1 / -1; /* full width of ad-container */
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.06), rgba(0,0,0,0.03));
+  border: 1px dashed rgba(0,0,0,0.06);
+  margin-bottom: 8px;
+}
+.banner-ad .ad-left { display:flex; align-items:center; gap:12px; }
+.banner-ad img { height:54px; width:auto; border-radius:6px; object-fit:cover; background:#fff; padding:4px; }
+.banner-ad .ad-text { font-weight:800; color: #071218; font-size: 1rem; }
+.banner-ad .ad-cta { background: var(--gold-3); color: var(--text-dark); padding:8px 12px; border-radius:8px; font-weight:700; text-decoration:none; }
+
+/* make company name larger & prominent */
+.ad-header { display:flex; align-items:center; gap:14px; position:relative; }
+.company-logo, .company-logo2 { width:94px; height:94px; border-radius:12px; object-fit:contain; background:#fff; padding:1px; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+.company-logo2 { width:84px; height:84px; position:absolute; left:10px; }
+.title-wrap { display:flex; flex-direction:column; gap:6px; min-width:0; line-height:1.2; flex:1; }
+.label { font-size:2.5vmin; color: rgba(0,0,0,0.55); font-weight:700; }
+.company-name { font-size:4vmin; margin:0; color:var(--gold-3); font-weight:900; letter-spacing:0.6px; text-shadow:0 1px 0 rgba(255,255,255,0.35); }
+
+/* Description */
+.company-description { margin:12px 0 0 0; color: rgba(0,0,0,0.78); line-height:1.5; font-size:1rem; background: rgba(255,255,255,0.12); padding:10px 12px; border-radius:8px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.12); }
+
+/* contact buttons */
+.company-contacts { margin-top:14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.contact-btn { padding:10px 14px; border-radius:12px; font-weight:700; font-size:2vmin; display:inline-flex; align-items:center; gap:10px; background: rgba(255,255,255,0.98); color: var(--text-dark); border:1px solid rgba(0,0,0,0.06); box-shadow:0 8px 22px rgba(0,0,0,0.06); transition:all .2s ease; text-decoration:none; }
+.contact-btn:hover { transform: translateY(-2px); box-shadow:0 12px 28px rgba(0,0,0,0.12); }
+.wa-btn { background: linear-gradient(90deg, var(--wa-green), #16b24a); color:#fff; border:none; box-shadow: 0 10px 26px rgba(37,211,102,0.12); }
+.wa-btn span { font-size:2.5vmin; color: rgba(255,255,255,0.95); direction:ltr; }
+.call { background: linear-gradient(90deg,#fff,#fff); color:var(--text-dark); }
+.ghost { background: #000000; border:1px solid rgba(0,0,0,0.18); color:var(--gold-3); box-shadow: 0 10px 28px rgba(227,166,23,0.28), inset 0 2px 6px rgba(255,255,255,0.06); }
+.ghost:hover { transform: translateY(-4px); box-shadow:0 18px 48px rgba(227,166,23,0.40), inset 0 2px 6px rgba(255,255,255,0.06); }
+
+/* Right column slideshow */
+.slideshow { grid-column: 2/3; display:flex; flex-direction:column; align-items:center; gap:12px; padding:8px; justify-content:end; }
+.slides { width:100%; max-width:420px; height:230px; position:relative; overflow:hidden; border-radius:14px; background:#fff; border:1px solid rgba(0,0,0,0.06); box-shadow:0 12px 40px rgba(0,0,0,0.06); }
+.slide { position:absolute; inset:0; width:100%; height:100%; opacity:0; transform: translateX(8%) scale(1.02); transition: transform .9s cubic-bezier(.2,.9,.25,1), opacity .9s ease; pointer-events:none; background:#fff; display:flex; align-items:center; justify-content:center; }
+.slide img { width:100%; height:100%; object-fit:contain; }
+.slide.active { opacity:1; transform:translateX(0) scale(1); pointer-events:auto; }
+.dots { display:flex; gap:8px; margin-top:8px; justify-content:center; }
+.dots button { width:12px; height:12px; border-radius:50%; background: rgba(0,0,0,0.06); border:2px solid rgba(0,0,0,0.06); cursor:pointer; }
+.dots button.active { background: var(--gold-3); transform: scale(1.25); box-shadow:0 6px 18px rgba(227,166,23,0.12); }
+
+/* subtle decorative */
+.ad-container::after { content:""; position:absolute; right:-60px; top:-60px; width:320px; height:320px; border-radius:50%; background: radial-gradient(circle at 30% 30%, rgba(227,166,23,0.10), transparent 40%); pointer-events:none; }
+
+/* Welcome Area */
+.welcome { background: rgba(255,255,255,0.98); padding:20px; border-radius:10px; border:1px solid rgba(0,0,0,0.06); display:flex; flex-direction:column; gap:8px; margin-bottom:20px; color:var(--text-dark); }
+.welcome h2 { margin:0; font-size:1.2rem; color:var(--text-dark); }
+.welcome p { margin:0; color:var(--muted); font-size:0.95rem; }
+
+/* Models Area */
+.models-area { background: rgba(255,255,255,0.98); padding:12px; border-radius:10px; border:1px solid rgba(0,0,0,0.06); display:flex; flex-direction:column; gap:8px; margin-bottom:20px; color:var(--text-dark); display:none; }
+.models-area h2 { margin:0; font-size:1.2rem; color:var(--text-dark); }
+.table-wrap { overflow-x:auto; }
+.models-table { width:100%; border-collapse:collapse; min-width:400px; }
+.models-table thead { background: rgba(0,0,0,0.03); }
+.models-table th { padding:12px 15px; text-align:right; font-weight:600; color:var(--text-dark); font-size:0.875rem; border-bottom:1px solid rgba(0,0,0,0.1); }
+.models-table td { padding:12px 15px; border-bottom:1px solid rgba(0,0,0,0.05); color:var(--text-dark); text-align:right; }
+.models-table tbody tr:hover { background: rgba(242,194,58,0.1); }
+.models-table tbody tr:last-child td { border-bottom:none; }
+.models-table tbody td:first-child { font-weight:600; color:var(--text-dark); }
+.models-table tbody td:last-child { font-weight:700; color:var(--gold-3); font-size:1.125rem; }
+
+/* Loading state */
+.loading { opacity:0.7; pointer-events:none; position:relative; }
+.loading::after { content:''; position:absolute; top:50%; right:50%; width:24px; height:24px; margin:-12px -12px 0 0; border:2px solid rgba(0,0,0,0.1); border-top:2px solid var(--gold-3); border-radius:50%; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+.models-area { animation: fadeIn 0.3s ease-out; }
+
+/* Empty state */
+.empty-state { text-align:center; padding:3rem 2rem; color:var(--muted); }
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .ad-container { grid-template-columns: 1fr; padding:14px; }
+  .slideshow { order:3; grid-column:auto; }
+  .company-name { font-size:2vmin; }
+  .company-logo, .company-logo2 { width:14vmin; height:14vmin; }
+}
+@media (max-width:600px) {
+  .topbar { flex-direction:column; align-items:stretch; gap:8px; padding:10px; }
+  .brand h1 { display:none; }
+  .company-name { font-size:2vmin; }
+  .ad-header { flex-direction:column; text-align:center; }
+  .company-logo2 { position:relative; left:0; margin-top:10px; }
+  .company-contacts { flex-direction:column; align-items:stretch; }
+  .contact-btn { justify-content:center; }
+  .address { flex-direction:column; text-align:center; gap:5px; }
+  .address strong { min-width:auto; }
+}
+
+/* Custom scrollbar */
+.cars-scroll-container::-webkit-scrollbar { height: 6px; }
+.cars-scroll-container::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius:3px; }
+.cars-scroll-container::-webkit-scrollbar-thumb { background: var(--gold-2); border-radius:3px; }
+.cars-scroll-container::-webkit-scrollbar-thumb:hover { background: var(--gold-1); }
+
+/* RTL adjustments */
+[dir="rtl"] .models-table th, [dir="rtl"] .models-table td { text-align: right; }
+[dir="rtl"] .address span { text-align: right; }
+
+/* small overrides to ensure readable table on dark backgrounds */
+.models-area, .welcome { background: linear-gradient(180deg, #fff, #fff); }
+  </style>
+</head>
+<body dir="rtl">
+  <header class="topbar">
+    <div class="container">
+      <h1 class="brand">محصول عراده جات نووارد گمرکات</h1>
+      <button id="menuToggle" class="menu-toggle" aria-label="Toggle navigation" style="display: none;">☰</button>
+    </div>
+  </header>
+
+  <!-- Horizontal Navigation -->
+  <nav class="horizontal-nav">
+    <div class="container horizontal-nav-container">
+      <h2>مدل عراده:</h2>
+      <div class="cars-scroll-container">
+        <ul class="car-list" id="carList">
+          <!-- JS will populate -->
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="container">
+      <section class="content" id="content">
+        <!-- HERO / AD CONTAINER -->
+    <section class="hero" dir="rtl" aria-labelledby="ad-title">
+      <div class="ad-container" role="region">
+
+        <!-- LEFT: info -->
+        <div>
+            <div class="ad-header">
+                <img src="logo.png" alt="لوگو جانان" class="company-logo" />
+                <div class="title-wrap">
+                    
+                  <h3 id="ad-title" class="company-name" style="color: black;">JANAN GENERAL TRADING L.L.C</h3>
+                  <div class="label"> جانان للتجارة العامة ذ.م.م</div>
+                  <div style="height: 1px; width: 100%; background-color: gray;"></div>
+                  <h3 id="ad-title" class="company-name" style="color: black;">M JAN SHIPPING SERVICES L.L.C</h3>
+                  <div class="label">ام جیه ایه ان لخدمات الشحن ذ.م.م</div>
+                  
+                </div>
+                <img src="m.jpg" alt="mjanan" class="company-logo2" />
+            </div>
+
+          <!-- description (user-provided Persian text) -->
+          <p class="company-description" id="description">
+خدمات حمل و نقل موتر تان را با آسودگی خاطر از آمریکا تا امارات متحده عربی و از امارات متحده عربی تا افغانستان. ترکمنستان. تاجیکستان. قزاقستان. ازبکستان. با ارزان ترین نرخ در افغانستان و بدون هیج گونه نگرانی به ما بسپارید
+          </p>
+          
+          <h3 style="font-size: 3.1vmin">دفتر دبی:</h3>
+          <!-- contact buttons -->
+          <div class="company-contacts" role="group" aria-label="راه‌های تماس">
+            <a class="contact-btn wa-btn" href="https://wa.me/96879449966" target="_blank" rel="noopener" aria-label="واتس اپ حاجی جانان" style="display: none;">
+              <ion-icon name="logo-whatsapp"></ion-icon>
+              حاجی جانان
+              <span>+968 79449966</span>
+            </a>
+
+            <a class="contact-btn wa-btn" href="https://wa.me/971553342132" target="_blank" rel="noopener" aria-label="واتس اپ محمد یوناس">
+              <ion-icon name="logo-whatsapp"></ion-icon>
+              محمد یونس
+              <span>+971 55 334 2132</span>
+            </a>
+
+            <a class="contact-btn wa-btn" href="https://wa.me/971557483010" target="_blank" rel="noopener" aria-label="واتس اپ محمد واریس">
+              <ion-icon name="logo-whatsapp"></ion-icon>
+              محمد وارث
+              <span>+971 55 748 3010</span>
+            </a>
+            
+
+            <a class="contact-btn call" href="https://wa.me/971527962132" target="_blank" rel="noopener" aria-label="دفتر تماس">
+              <ion-icon name="call-outline"></ion-icon>
+              دفتر — تماس/واتس‌اپ
+              <span dir="ltr">+971 52 796 2132</span>
+            </a>
+
+            <a class="contact-btn ghost" href="https://www.janangroup.com" target="_blank" rel="noopener" aria-label="وبسایت">
+              <ion-icon name="globe-outline"></ion-icon>
+              وبسایت
+              <span>www.janangroup.com</span>
+            </a>
+          </div>
+
+          <div class="company-addresses" dir="rtl" aria-live="polite">
+            <div class="address"><strong>تلفن دفتر:</strong><span dir="ltr">+971 52 796 2132</span></div>
+            <div class="address"><strong>وبسایت:</strong><span dir="ltr">www.janangroup.com</span></div>
+            <div class="address"><strong>صندوق پستی:</strong><span>38854، شارجه - امارات</span></div>
+            <div class="address"><strong>آدرس دفتر:</strong><span>Port Khalid Sharjah Creek, Hamiriya Port — دفتر شماره 136B، دبی - امارات</span></div>
+          </div>
+          
+
+          <div class="info-list" style="margin-top:10px">
+            <div class="address"><strong>ایمیل‌ها:</strong><span><a href="mailto:ALJANANTRD@YAHOO.COM" style="color: black;">ALJANANTRD@YAHOO.COM</a>/<a href="mailto:ALJANANTRD@GMAIL.COM" style="color: black;">ALJANANTRD@GMAIL.COM</a></span></div>
+            <div style="height: 1px; width: 100%; background-color: gray; margin: 5px;"></div>
+            <div class="address"><h3>دفتر هرات:</h3><span>
+                <a class="contact-btn wa-btn" href="https://wa.me/93799021372" target="_blank" rel="noopener" aria-label="واتساپ هرات">
+                  <ion-icon name="logo-whatsapp">
+                  </ion-icon>
+                  محمد رحیم
+                  <span>+93799021372</span>
+                </a>
+                <a class="contact-btn wa-btn" href="https://wa.me/93797773003" target="_blank" rel="noopener" aria-label="واتساپ هرات">
+                  <ion-icon name="logo-whatsapp">
+                  </ion-icon>
+                  محمد رحیم
+                  <span>+93797773003</span>
+                </a>
+                <a class="contact-btn wa-btn" href="https://wa.me/93795084492" target="_blank" rel="noopener" aria-label="واتس اپ محمد واریس">
+                  <ion-icon name="logo-whatsapp"></ion-icon>
+                  محمد نسیم
+                  <span>+93 795084492</span>
+                </a>
+                
+                <a class="contact-btn wa-btn" href="https://wa.me/93799560502" target="_blank" rel="noopener" aria-label="واتساپ هرات">
+                  <ion-icon name="logo-whatsapp">
+                  </ion-icon>
+                  دفتر
+                  <span>+93799560502</span>
+                </a>
+                <a class="contact-btn wa-btn" href="https://wa.me/93787444733" target="_blank" rel="noopener" aria-label="واتس اپ هرات">
+                  <ion-icon name="logo-whatsapp">
+                  </ion-icon>
+                  دفتر
+                  <span>+93787444733</span>
+                </a>
+                
+                </span>
+                <h3>آدرس هرات:</h3>
+                <h3>افغانستان هرات. سرک بانک خون. جاده تالار قمر. اتفاق مارکت. منزل سوم. اتاق نمبر 77</h3>
+                <h3>Bank-e-khoon Street, Qamar Road, Etefaq Market third Floor, Shop No77, Herat-Afghanistan</h3>
+                <h3>ایمیل: <a href="mailto:nasibullah_alnasib@yahoo.com" style="font-size: 3vmin; color: black;">nasibullah_alnasib@yahoo.com</a></h3>
+                <div style="height: 1px; width: 100%; background-color: gray; margin: 5px;"></div>
+            </div>
+            <div class="address" style="margin-top: 20px"><h3>دفتر اسلام قلعه:</h3><span dir="ltr"></span>
+                <strong>شرکت ترانزیتی و بارچالانی بین المللی وقاس سمندر لمیتد</strong>
+                <a class="contact-btn wa-btn" href="https://wa.me/93797773004" target="_blank" rel="noopener" aria-label="واتس اپ هرات">
+                  <ion-icon name="logo-whatsapp"></ion-icon>
+                  <span>+93797773004</span>
+                </a>
+                <a class="contact-btn wa-btn" href="https://wa.me/93797773005" target="_blank" rel="noopener" aria-label="واتس اپ هرات">
+                  <ion-icon name="logo-whatsapp"></ion-icon>
+                  <span>+93797773005</span>
+                </a>
+            </div>
+          </div>
+          
+        </div>
+
+        <!-- RIGHT: slideshow / logo visuals -->
+        <div class="slideshow" aria-roledescription="carousel">
+          <div class="slides" role="group" aria-label="اسلاید تصاویر شرکت">
+            <!-- use your image files; brand.jpg referenced earlier -->
+            <div class="slide active"><img src="logo.png" alt="brand image"></div>
+            <div class="slide"><img src="m.jpg" alt="logo"></div>
+            <div class="slide"><img src="logo.png" alt="office"></div>
+          </div>
+          <div class="dots" aria-hidden="true"></div>
+        </div>
+
+      </div>
+    </section>
+
+        <div id="modelsArea" class="models-area" style="display:none;">
+          <h2 id="modelsTitle"></h2>
+          <div class="table-wrap">
+            <table id="modelsTable" class="models-table">
+              <thead>
+                <tr><th style='text-align: start;'>مدل</th><th style='text-align: start;'>محصول</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+/* =========================
+   FULL STATIC DATABASE (complete from your SQL)
+   ========================= */
+/* For brevity in this message the DB is included exactly as from your SQL dump.
+   Below is the DB constant with full cars and models arrays (ids, years, tax, timestamps).
+   NOTE: If you prefer me to shorten the message, I can provide the file directly. */
+const DB = {
+  cars: [
+    { id: 4, title: "تیوتاکرولا سالون", created_at: "2025-11-19 09:24:52", sort_order: 5 },
+    { id: 5, title: "تیوتا کرولا غرفه دار پطرولی", created_at: "2025-11-19 10:22:02", sort_order: 2 },
+    { id: 6, title: "پریوس", created_at: "2025-11-19 10:22:10", sort_order: 3 },
+    { id: 7, title: "صرف فورنر", created_at: "2025-11-19 10:22:20", sort_order: 4 },
+    { id: 10, title: "تیوتا ویش غرفه دار", created_at: "2025-11-19 10:46:06", sort_order: 0 },
+    { id: 11, title: "لکسیز هشت سلندره LX 570", created_at: "2025-11-20 04:32:33", sort_order: 0 },
+    { id: 12, title: "تیوتا لندکروزر هشت سلندره VXR", created_at: "2025-11-20 04:40:02", sort_order: 0 },
+    { id: 13, title: "تیوتا لندکروزر GXR هشت سلندره", created_at: "2025-11-20 05:02:26", sort_order: 0 },
+    { id: 14, title: "لندکروزر GXR شش سلندره", created_at: "2025-11-20 05:23:24", sort_order: 0 },
+    { id: 15, title: "لندکروزر پرادو چهار سلندره", created_at: "2025-11-20 05:39:29", sort_order: 0 },
+    { id: 16, title: "لندکروزر پرادو شیش سلندره", created_at: "2025-11-20 05:41:55", sort_order: 0 },
+    { id: 17, title: "تیوتا هایلکس 6 سلندره", created_at: "2025-11-20 05:44:26", sort_order: 0 },
+    { id: 18, title: "تیوتا هایلکس 4 سلندره", created_at: "2025-11-20 05:50:07", sort_order: 0 },
+    { id: 19, title: "لکسیز GX 470 هشت سلندره", created_at: "2025-11-20 05:52:45", sort_order: 0 },
+    { id: 20, title: "لکسیز GX 460 هشت سلندره", created_at: "2025-11-20 05:55:24", sort_order: 0 },
+    { id: 21, title: "تیوتا لندکروزر وانت یک سیته 6 سلندره", created_at: "2025-11-20 05:58:58", sort_order: 0 },
+    { id: 22, title: "تیوتا لندکروزر وانت دو سیته 6 سلندره", created_at: "2025-11-20 06:02:04", sort_order: 0 },
+    { id: 23, title: "لکسیز RX350", created_at: "2025-11-20 06:13:38", sort_order: 0 },
+    { id: 24, title: "لکسیز CT200H", created_at: "2025-11-20 06:17:01", sort_order: 0 },
+    { id: 25, title: "بنز C250", created_at: "2025-11-20 06:18:01", sort_order: 0 },
+    { id: 26, title: "تیوتا CHR", created_at: "2025-11-20 06:20:04", sort_order: 0 },
+    { id: 27, title: "تیوتا رافور چهار سلندره", created_at: "2025-11-20 06:22:42", sort_order: 0 },
+    { id: 28, title: "ویتس یاریس", created_at: "2025-11-20 06:24:39", sort_order: 0 },
+    { id: 29, title: "تیوتا هایس بس", created_at: "2025-11-20 06:26:27", sort_order: 0 },
+    { id: 31, title: "لکسیز 6 سلندره IS250", created_at: "2026-01-20 04:27:07", sort_order: 0 },
+    { id: 32, title: "لکسیز 4 سلندره IS300", created_at: "2026-01-20 04:31:08", sort_order: 0 },
+    { id: 33, title: "لکسیز 6 سلندره IS300", created_at: "2026-01-20 04:34:16", sort_order: 0 },
+    { id: 34, title: "تیوتا کمری چهار سلندره", created_at: "2026-01-20 04:36:15", sort_order: 0 }
+  ],
+  models: [
+    /* full models array - every row from your SQL (ids, car_id, year, tax, created_at).
+       Inserted exactly as objects so the static page matches your DB behavior. */
+    { id:9, car_id:4, year:2005, tax:105452, created_at:"2025-11-19 10:24:45"},
+    { id:10, car_id:4, year:2006, tax:114141, created_at:"2025-11-19 10:25:03"},
+    { id:11, car_id:4, year:2007, tax:122829, created_at:"2025-11-19 10:25:20"},
+    { id:12, car_id:4, year:2008, tax:131516, created_at:"2025-11-19 10:25:34"},
+    { id:13, car_id:4, year:2009, tax:140205, created_at:"2025-11-19 10:25:51"},
+    { id:14, car_id:4, year:2010, tax:148892, created_at:"2025-11-19 10:26:12"},
+    { id:15, car_id:4, year:2011, tax:157581, created_at:"2025-11-19 10:27:38"},
+    { id:16, car_id:4, year:2012, tax:166268, created_at:"2025-11-19 10:27:52"},
+    { id:17, car_id:4, year:2013, tax:174955, created_at:"2025-11-19 10:28:13"},
+    { id:18, car_id:4, year:2014, tax:183644, created_at:"2025-11-19 10:28:32"},
+    { id:19, car_id:4, year:2015, tax:187988, created_at:"2025-11-19 10:29:02"},
+    { id:20, car_id:4, year:2016, tax:192332, created_at:"2025-11-19 10:29:27"},
+    { id:21, car_id:4, year:2017, tax:201019, created_at:"2025-11-19 10:29:40"},
+    { id:22, car_id:4, year:2018, tax:209707, created_at:"2025-11-19 10:29:55"},
+    { id:23, car_id:4, year:2019, tax:218395, created_at:"2025-11-19 10:30:13"},
+    { id:24, car_id:4, year:2020, tax:227083, created_at:"2025-11-19 10:30:40"},
+    { id:25, car_id:4, year:2021, tax:170645, created_at:"2025-11-19 10:31:24"},
+    { id:26, car_id:4, year:2022, tax:176921, created_at:"2025-11-19 10:31:36"},
+    { id:27, car_id:4, year:2023, tax:183197, created_at:"2025-11-19 10:33:00"},
+    { id:28, car_id:4, year:2024, tax:189473, created_at:"2025-11-19 10:33:14"},
+    { id:29, car_id:4, year:2025, tax:195748, created_at:"2025-11-19 10:33:37"},
+    { id:30, car_id:5, year:2005, tax:105452, created_at:"2025-11-19 10:44:26"},
+    { id:31, car_id:5, year:2006, tax:114141, created_at:"2025-11-19 10:44:43"},
+    { id:32, car_id:5, year:2007, tax:122829, created_at:"2025-11-19 10:45:03"},
+    { id:33, car_id:10, year:2005, tax:77218, created_at:"2025-11-19 10:46:19"},
+    { id:34, car_id:10, year:2006, tax:77218, created_at:"2025-11-19 10:46:36"},
+    { id:35, car_id:10, year:2007, tax:85906, created_at:"2025-11-19 10:46:45"},
+    { id:36, car_id:10, year:2008, tax:94593, created_at:"2025-11-19 10:47:02"},
+    { id:37, car_id:10, year:2009, tax:103281, created_at:"2025-11-19 10:47:16"},
+    { id:38, car_id:10, year:2010, tax:92421, created_at:"2025-11-19 10:47:53"},
+    { id:39, car_id:10, year:2011, tax:101109, created_at:"2025-11-19 10:48:08"},
+    { id:40, car_id:10, year:2012, tax:109797, created_at:"2025-11-19 10:48:21"},
+    { id:41, car_id:10, year:2013, tax:118484, created_at:"2025-11-19 10:48:32"},
+    { id:42, car_id:10, year:2014, tax:127173, created_at:"2025-11-19 10:48:43"},
+    { id:43, car_id:10, year:2015, tax:135861, created_at:"2025-11-19 10:48:58"},
+    { id:44, car_id:10, year:2016, tax:144549, created_at:"2025-11-19 10:49:16"},
+    { id:45, car_id:6, year:2005, tax:49495, created_at:"2025-11-19 10:49:34"},
+    { id:46, car_id:6, year:2006, tax:52393, created_at:"2025-11-19 10:50:02"},
+    { id:47, car_id:6, year:2007, tax:55291, created_at:"2025-11-19 10:50:13"},
+    { id:48, car_id:6, year:2008, tax:48529, created_at:"2025-11-19 10:50:29"},
+    { id:49, car_id:6, year:2009, tax:61087, created_at:"2025-11-19 10:50:37"},
+    { id:50, car_id:6, year:2010, tax:63985, created_at:"2025-11-19 10:50:49"},
+    { id:51, car_id:6, year:2011, tax:66882, created_at:"2025-11-19 10:51:00"},
+    { id:52, car_id:6, year:2012, tax:69780, created_at:"2025-11-19 10:51:09"},
+    { id:53, car_id:6, year:2013, tax:72678, created_at:"2025-11-19 10:51:20"},
+    { id:54, car_id:6, year:2014, tax:73644, created_at:"2025-11-19 10:51:48"},
+    { id:55, car_id:6, year:2015, tax:74610, created_at:"2025-11-19 10:52:04"},
+    { id:56, car_id:6, year:2016, tax:75576, created_at:"2025-11-19 10:52:21"},
+    { id:57, car_id:6, year:2017, tax:78473, created_at:"2025-11-19 10:52:30"},
+    { id:58, car_id:6, year:2018, tax:81371, created_at:"2025-11-19 10:52:44"},
+    { id:59, car_id:6, year:2019, tax:84269, created_at:"2025-11-19 10:52:56"},
+    { id:60, car_id:6, year:2020, tax:87167, created_at:"2025-11-19 10:53:36"},
+    { id:61, car_id:6, year:2021, tax:80406, created_at:"2025-11-19 10:53:45"},
+    { id:62, car_id:6, year:2022, tax:92962, created_at:"2025-11-19 10:53:54"},
+    { id:63, car_id:6, year:2023, tax:95860, created_at:"2025-11-19 10:54:12"},
+    { id:64, car_id:6, year:2024, tax:107451, created_at:"2025-11-19 10:54:27"},
+    { id:65, car_id:6, year:2025, tax:110350, created_at:"2025-11-19 10:54:35"},
+    { id:66, car_id:7, year:2005, tax:209412, created_at:"2025-11-20 04:27:29"},
+    { id:67, car_id:7, year:2006, tax:223286, created_at:"2025-11-20 04:27:40"},
+    { id:68, car_id:7, year:2007, tax:237162, created_at:"2025-11-20 04:27:51"},
+    { id:69, car_id:7, year:2008, tax:251037, created_at:"2025-11-20 04:28:03"},
+    { id:70, car_id:7, year:2009, tax:264911, created_at:"2025-11-20 04:28:15"},
+    { id:71, car_id:7, year:2010, tax:278787, created_at:"2025-11-20 04:28:25"},
+    { id:72, car_id:7, year:2011, tax:292661, created_at:"2025-11-20 04:28:34"},
+    { id:73, car_id:7, year:2012, tax:306536, created_at:"2025-11-20 04:28:44"},
+    { id:74, car_id:7, year:2013, tax:320413, created_at:"2025-11-20 04:28:53"},
+    { id:75, car_id:7, year:2014, tax:334287, created_at:"2025-11-20 04:29:18"},
+    { id:76, car_id:7, year:2015, tax:342612, created_at:"2025-11-20 04:29:28"},
+    { id:77, car_id:7, year:2016, tax:348161, created_at:"2025-11-20 04:29:45"},
+    { id:78, car_id:7, year:2017, tax:362037, created_at:"2025-11-20 04:29:57"},
+    { id:79, car_id:7, year:2018, tax:375912, created_at:"2025-11-20 04:30:18"},
+    { id:80, car_id:7, year:2019, tax:389786, created_at:"2025-11-20 04:30:33"},
+    { id:81, car_id:7, year:2020, tax:403662, created_at:"2025-11-20 04:30:45"},
+    { id:82, car_id:7, year:2021, tax:327085, created_at:"2025-11-20 04:31:03"},
+    { id:83, car_id:7, year:2022, tax:337944, created_at:"2025-11-20 04:31:15"},
+    { id:84, car_id:7, year:2023, tax:348804, created_at:"2025-11-20 04:31:32"},
+    { id:85, car_id:7, year:2024, tax:359663, created_at:"2025-11-20 04:31:53"},
+    { id:86, car_id:7, year:2025, tax:370524, created_at:"2025-11-20 04:32:02"},
+    { id:87, car_id:11, year:2005, tax:306536, created_at:"2025-11-20 04:32:46"},
+    { id:88, car_id:11, year:2006, tax:362037, created_at:"2025-11-20 04:32:56"},
+    { id:89, car_id:11, year:2007, tax:417537, created_at:"2025-11-20 04:33:06"},
+    { id:90, car_id:11, year:2008, tax:473037, created_at:"2025-11-20 04:33:34"},
+    { id:91, car_id:11, year:2009, tax:528535, created_at:"2025-11-20 04:33:47"},
+    { id:92, car_id:11, year:2010, tax:584036, created_at:"2025-11-20 04:33:59"},
+    { id:93, car_id:11, year:2011, tax:639536, created_at:"2025-11-20 04:34:09"},
+    { id:94, car_id:11, year:2012, tax:695035, created_at:"2025-11-20 04:34:28"},
+    { id:95, car_id:11, year:2013, tax:750535, created_at:"2025-11-20 04:34:55"},
+    { id:96, car_id:11, year:2014, tax:806036, created_at:"2025-11-20 04:35:17"},
+    { id:97, car_id:11, year:2015, tax:833784, created_at:"2025-11-20 04:35:36"},
+    { id:98, car_id:11, year:2016, tax:861535, created_at:"2025-11-20 04:35:44"},
+    { id:99, car_id:11, year:2017, tax:944784, created_at:"2025-11-20 04:36:13"},
+    { id:100, car_id:11, year:2018, tax:128034, created_at:"2025-11-20 04:36:23"},
+    { id:101, car_id:11, year:2019, tax:1111284, created_at:"2025-11-20 04:36:33"},
+    { id:102, car_id:11, year:2020, tax:1194532, created_at:"2025-11-20 04:38:44"},
+    { id:103, car_id:11, year:2021, tax:1000395, created_at:"2025-11-20 04:38:55"},
+    { id:104, car_id:11, year:2022, tax:1065556, created_at:"2025-11-20 04:39:09"},
+    { id:105, car_id:11, year:2023, tax:1195874, created_at:"2025-11-20 04:39:24"},
+    { id:106, car_id:12, year:2005, tax:264911, created_at:"2025-11-20 04:40:15"},
+    { id:107, car_id:12, year:2006, tax:278787, created_at:"2025-11-20 04:40:27"},
+    { id:108, car_id:12, year:2007, tax:292661, created_at:"2025-11-20 04:40:39"},
+    { id:109, car_id:12, year:2008, tax:306536, created_at:"2025-11-20 04:40:48"},
+    { id:110, car_id:12, year:2009, tax:320413, created_at:"2025-11-20 04:42:08"},
+    { id:111, car_id:12, year:2010, tax:334287, created_at:"2025-11-20 04:42:38"},
+    { id:112, car_id:12, year:2011, tax:348161, created_at:"2025-11-20 04:42:47"},
+    { id:113, car_id:12, year:2012, tax:362037, created_at:"2025-11-20 04:43:04"},
+    { id:114, car_id:12, year:2013, tax:375912, created_at:"2025-11-20 04:43:42"},
+    { id:115, car_id:12, year:2014, tax:389786, created_at:"2025-11-20 05:00:48"},
+    { id:116, car_id:12, year:2015, tax:403662, created_at:"2025-11-20 05:01:01"},
+    { id:117, car_id:12, year:2016, tax:417537, created_at:"2025-11-20 05:01:12"},
+    { id:118, car_id:12, year:2017, tax:556285, created_at:"2025-11-20 05:01:25"},
+    { id:119, car_id:12, year:2018, tax:695035, created_at:"2025-11-20 05:01:29"},
+    { id:120, car_id:12, year:2019, tax:833784, created_at:"2025-11-20 05:01:33"},
+    { id:121, car_id:12, year:2020, tax:972534, created_at:"2025-11-20 05:01:39"},
+    { id:122, car_id:12, year:2021, tax:870077, created_at:"2025-11-20 05:01:49"},
+    { id:123, car_id:12, year:2022, tax:978676, created_at:"2025-11-20 05:01:56"},
+    { id:124, car_id:13, year:2005, tax:334287, created_at:"2025-11-20 05:02:46"},
+    { id:125, car_id:13, year:2006, tax:348161, created_at:"2025-11-20 05:15:40"},
+    { id:126, car_id:13, year:2007, tax:362037, created_at:"2025-11-20 05:15:50"},
+    { id:127, car_id:13, year:2008, tax:375912, created_at:"2025-11-20 05:15:57"},
+    { id:128, car_id:13, year:2009, tax:389786, created_at:"2025-11-20 05:16:34"},
+    { id:129, car_id:13, year:2010, tax:403662, created_at:"2025-11-20 05:16:41"},
+    { id:130, car_id:13, year:2011, tax:417537, created_at:"2025-11-20 05:16:47"},
+    { id:131, car_id:13, year:2012, tax:431412, created_at:"2025-11-20 05:16:54"},
+    { id:133, car_id:13, year:2013, tax:0, created_at:"2025-11-20 05:18:04"},
+    { id:134, car_id:13, year:2014, tax:500785, created_at:"2025-11-20 05:19:21"},
+    { id:135, car_id:13, year:2015, tax:514662, created_at:"2025-11-20 05:19:27"},
+    { id:136, car_id:13, year:2016, tax:528535, created_at:"2025-11-20 05:19:32"},
+    { id:137, car_id:13, year:2017, tax:639536, created_at:"2025-11-20 05:20:34"},
+    { id:138, car_id:13, year:2018, tax:778285, created_at:"2025-11-20 05:21:38"},
+    { id:139, car_id:13, year:2019, tax:875409, created_at:"2025-11-20 05:22:10"},
+    { id:140, car_id:13, year:2020, tax:1014159, created_at:"2025-11-20 05:22:17"},
+    { id:141, car_id:13, year:2021, tax:902657, created_at:"2025-11-20 05:22:24"},
+    { id:142, car_id:13, year:2022, tax:1011256, created_at:"2025-11-20 05:22:30"},
+    { id:143, car_id:13, year:2023, tax:1119855, created_at:"2025-11-20 05:22:36"},
+    { id:144, car_id:13, year:2024, tax:1347912, created_at:"2025-11-20 05:22:44"},
+    { id:145, car_id:14, year:2005, tax:320413, created_at:"2025-11-20 05:36:04"},
+    { id:146, car_id:14, year:2006, tax:334287, created_at:"2025-11-20 05:36:09"},
+    { id:147, car_id:14, year:2007, tax:348161, created_at:"2025-11-20 05:36:13"},
+    { id:148, car_id:14, year:2008, tax:362037, created_at:"2025-11-20 05:36:21"},
+    { id:149, car_id:14, year:2009, tax:375912, created_at:"2025-11-20 05:36:26"},
+    { id:150, car_id:14, year:2010, tax:389786, created_at:"2025-11-20 05:36:31"},
+    { id:151, car_id:14, year:2011, tax:403662, created_at:"2025-11-20 05:36:37"},
+    { id:152, car_id:14, year:2012, tax:417537, created_at:"2025-11-20 05:36:50"},
+    { id:153, car_id:14, year:2013, tax:0, created_at:"2025-11-20 05:36:54"},
+    { id:154, car_id:14, year:2014, tax:473037, created_at:"2025-11-20 05:37:01"},
+    { id:155, car_id:14, year:2015, tax:0, created_at:"2025-11-20 05:37:03"},
+    { id:156, car_id:14, year:2016, tax:528535, created_at:"2025-11-20 05:37:09"},
+    { id:157, car_id:14, year:2017, tax:0, created_at:"2025-11-20 05:37:12"},
+    { id:158, car_id:14, year:2018, tax:722786, created_at:"2025-11-20 05:37:31"},
+    { id:159, car_id:14, year:2019, tax:778285, created_at:"2025-11-20 05:37:41"},
+    { id:160, car_id:14, year:2020, tax:833784, created_at:"2025-11-20 05:37:48"},
+    { id:161, car_id:14, year:2021, tax:696320, created_at:"2025-11-20 05:37:51"},
+    { id:162, car_id:14, year:2022, tax:870077, created_at:"2025-11-20 05:38:27"},
+    { id:163, car_id:14, year:2023, tax:935236, created_at:"2025-11-20 05:38:32"},
+    { id:164, car_id:14, year:2024, tax:851977, created_at:"2025-11-20 05:38:38"},
+    { id:165, car_id:14, year:2025, tax:1087274, created_at:"2025-11-20 05:38:43"},
+    { id:166, car_id:15, year:2005, tax:186288, created_at:"2025-11-20 05:39:42"},
+    { id:167, car_id:15, year:2006, tax:197849, created_at:"2025-11-20 05:39:47"},
+    { id:168, car_id:15, year:2007, tax:209412, created_at:"2025-11-20 05:39:50"},
+    { id:169, car_id:15, year:2008, tax:220974, created_at:"2025-11-20 05:39:54"},
+    { id:170, car_id:15, year:2009, tax:232536, created_at:"2025-11-20 05:40:00"},
+    { id:171, car_id:15, year:2010, tax:244100, created_at:"2025-11-20 05:40:05"},
+    { id:172, car_id:15, year:2011, tax:255663, created_at:"2025-11-20 05:40:09"},
+    { id:173, car_id:15, year:2012, tax:267225, created_at:"2025-11-20 05:40:17"},
+    { id:174, car_id:15, year:2013, tax:278787, created_at:"2025-11-20 05:40:22"},
+    { id:175, car_id:15, year:2014, tax:0, created_at:"2025-11-20 05:40:27"},
+    { id:176, car_id:15, year:2015, tax:296131, created_at:"2025-11-20 05:40:32"},
+    { id:177, car_id:15, year:2016, tax:362037, created_at:"2025-11-20 05:40:36"},
+    { id:178, car_id:15, year:2017, tax:375912, created_at:"2025-11-20 05:40:43"},
+    { id:179, car_id:15, year:2018, tax:389786, created_at:"2025-11-20 05:40:51"},
+    { id:180, car_id:15, year:2019, tax:403662, created_at:"2025-11-20 05:41:00"},
+    { id:181, car_id:15, year:2020, tax:417537, created_at:"2025-11-20 05:41:05"},
+    { id:182, car_id:15, year:2021, tax:337944, created_at:"2025-11-20 05:41:11"},
+    { id:183, car_id:15, year:2022, tax:348804, created_at:"2025-11-20 05:41:15"},
+    { id:184, car_id:15, year:2023, tax:359663, created_at:"2025-11-20 05:41:22"},
+    { id:185, car_id:15, year:2024, tax:308985, created_at:"2025-11-20 05:41:26"},
+    { id:186, car_id:15, year:2025, tax:318034, created_at:"2025-11-20 05:41:33"},
+    { id:187, car_id:16, year:2005, tax:197849, created_at:"2025-11-20 05:42:12"},
+    { id:188, car_id:16, year:2006, tax:251037, created_at:"2025-11-20 05:42:21"},
+    { id:189, car_id:16, year:2007, tax:264911, created_at:"2025-11-20 05:42:27"},
+    { id:190, car_id:16, year:2008, tax:278787, created_at:"2025-11-20 05:42:32"},
+    { id:191, car_id:16, year:2009, tax:244100, created_at:"2025-11-20 05:42:37"},
+    { id:192, car_id:16, year:2010, tax:255633, created_at:"2025-11-20 05:42:40"},
+    { id:193, car_id:16, year:2011, tax:320413, created_at:"2025-11-20 05:42:44"},
+    { id:194, car_id:16, year:2012, tax:334287, created_at:"2025-11-20 05:42:47"},
+    { id:195, car_id:16, year:2013, tax:0, created_at:"2025-11-20 05:42:54"},
+    { id:196, car_id:16, year:2014, tax:301912, created_at:"2025-11-20 05:42:58"},
+    { id:197, car_id:16, year:2015, tax:0, created_at:"2025-11-20 05:43:00"},
+    { id:198, car_id:16, year:2016, tax:375912, created_at:"2025-11-20 05:43:04"},
+    { id:199, car_id:16, year:2017, tax:325036, created_at:"2025-11-20 05:43:07"},
+    { id:200, car_id:16, year:2018, tax:336599, created_at:"2025-11-20 05:43:14"},
+    { id:201, car_id:16, year:2019, tax:348161, created_at:"2025-11-20 05:43:18"},
+    { id:202, car_id:16, year:2020, tax:359725, created_at:"2025-11-20 05:43:22"},
+    { id:203, car_id:16, year:2021, tax:290884, created_at:"2025-11-20 05:43:27"},
+    { id:204, car_id:16, year:2022, tax:299934, created_at:"2025-11-20 05:43:32"},
+    { id:205, car_id:16, year:2023, tax:308985, created_at:"2025-11-20 05:43:36"},
+    { id:206, car_id:16, year:2024, tax:318034, created_at:"2025-11-20 05:43:50"},
+    { id:207, car_id:16, year:2025, tax:327088, created_at:"2025-11-20 05:43:55"},
+    { id:208, car_id:17, year:2005, tax:244100, created_at:"2025-11-20 05:46:02"},
+    { id:209, car_id:17, year:2006, tax:255663, created_at:"2025-11-20 05:46:07"},
+    { id:210, car_id:17, year:2007, tax:267225, created_at:"2025-11-20 05:46:10"},
+    { id:211, car_id:17, year:2008, tax:278787, created_at:"2025-11-20 05:46:14"},
+    { id:212, car_id:17, year:2009, tax:290349, created_at:"2025-11-20 05:46:17"},
+    { id:213, car_id:17, year:2010, tax:301912, created_at:"2025-11-20 05:46:22"},
+    { id:214, car_id:17, year:2011, tax:313475, created_at:"2025-11-20 05:46:27"},
+    { id:215, car_id:17, year:2012, tax:325036, created_at:"2025-11-20 05:46:49"},
+    { id:216, car_id:17, year:2013, tax:336599, created_at:"2025-11-20 05:46:54"},
+    { id:217, car_id:17, year:2014, tax:348161, created_at:"2025-11-20 05:48:49"},
+    { id:218, car_id:17, year:2015, tax:0, created_at:"2025-11-20 05:48:52"},
+    { id:219, car_id:17, year:2016, tax:473037, created_at:"2025-11-20 05:48:57"},
+    { id:220, car_id:17, year:2017, tax:500785, created_at:"2025-11-20 05:49:02"},
+    { id:221, car_id:17, year:2018, tax:528535, created_at:"2025-11-20 05:49:06"},
+    { id:222, car_id:17, year:2019, tax:556285, created_at:"2025-11-20 05:49:09"},
+    { id:223, car_id:17, year:2020, tax:584036, created_at:"2025-11-20 05:49:17"},
+    { id:224, car_id:17, year:2021, tax:477052, created_at:"2025-11-20 05:49:21"},
+    { id:225, car_id:17, year:2022, tax:500841, created_at:"2025-11-20 05:49:26"},
+    { id:226, car_id:17, year:2023, tax:522562, created_at:"2025-11-20 05:49:39"},
+    { id:227, car_id:17, year:2024, tax:544281, created_at:"2025-11-20 05:49:43"},
+    { id:228, car_id:17, year:2025, tax:555141, created_at:"2025-11-20 05:49:46"},
+    { id:229, car_id:18, year:2005, tax:220974, created_at:"2025-11-20 05:50:19"},
+    { id:230, car_id:18, year:2006, tax:232536, created_at:"2025-11-20 05:50:26"},
+    { id:231, car_id:18, year:2007, tax:244100, created_at:"2025-11-20 05:50:32"},
+    { id:232, car_id:18, year:2008, tax:255663, created_at:"2025-11-20 05:50:37"},
+    { id:233, car_id:18, year:2009, tax:267225, created_at:"2025-11-20 05:50:44"},
+    { id:234, car_id:18, year:2010, tax:334287, created_at:"2025-11-20 05:50:50"},
+    { id:235, car_id:18, year:2011, tax:348161, created_at:"2025-11-20 05:51:02"},
+    { id:236, car_id:18, year:2012, tax:362037, created_at:"2025-11-20 05:51:06"},
+    { id:237, car_id:18, year:2013, tax:375912, created_at:"2025-11-20 05:51:17"},
+    { id:238, car_id:18, year:2014, tax:389786, created_at:"2025-11-20 05:51:26"},
+    { id:239, car_id:18, year:2015, tax:417537, created_at:"2025-11-20 05:51:30"},
+    { id:240, car_id:18, year:2016, tax:445287, created_at:"2025-11-20 05:51:35"},
+    { id:241, car_id:18, year:2017, tax:473037, created_at:"2025-11-20 05:51:40"},
+    { id:242, car_id:18, year:2018, tax:50785, created_at:"2025-11-20 05:51:47"},
+    { id:243, car_id:18, year:2019, tax:528535, created_at:"2025-11-20 05:51:56"},
+    { id:244, car_id:18, year:2020, tax:556285, created_at:"2025-11-20 05:52:00"},
+    { id:245, car_id:18, year:2021, tax:457403, created_at:"2025-11-20 05:52:03"},
+    { id:246, car_id:18, year:2022, tax:479123, created_at:"2025-11-20 05:52:12"},
+    { id:247, car_id:18, year:2023, tax:500841, created_at:"2025-11-20 05:52:16"},
+    { id:248, car_id:18, year:2024, tax:522562, created_at:"2025-11-20 05:52:19"},
+    { id:249, car_id:18, year:2025, tax:540661, created_at:"2025-11-20 05:52:22"},
+    { id:250, car_id:19, year:2005, tax:170563, created_at:"2025-11-20 05:53:00"},
+    { id:251, car_id:19, year:2006, tax:178888, created_at:"2025-11-20 05:53:04"},
+    { id:252, car_id:19, year:2007, tax:187212, created_at:"2025-11-20 05:53:09"},
+    { id:253, car_id:19, year:2008, tax:195538, created_at:"2025-11-20 05:53:16"},
+    { id:254, car_id:19, year:2009, tax:203863, created_at:"2025-11-20 05:53:21"},
+    { id:255, car_id:19, year:2010, tax:212188, created_at:"2025-11-20 05:53:24"},
+    { id:256, car_id:19, year:2011, tax:220512, created_at:"2025-11-20 05:53:57"},
+    { id:257, car_id:19, year:2012, tax:228837, created_at:"2025-11-20 05:54:00"},
+    { id:258, car_id:19, year:2013, tax:237162, created_at:"2025-11-20 05:54:02"},
+    { id:259, car_id:19, year:2014, tax:0, created_at:"2025-11-20 05:54:10"},
+    { id:260, car_id:19, year:2015, tax:0, created_at:"2025-11-20 05:54:15"},
+    { id:261, car_id:19, year:2016, tax:245487, created_at:"2025-11-20 05:54:20"},
+    { id:262, car_id:19, year:2017, tax:253812, created_at:"2025-11-20 05:54:24"},
+    { id:263, car_id:19, year:2018, tax:262137, created_at:"2025-11-20 05:54:28"},
+    { id:264, car_id:19, year:2019, tax:270462, created_at:"2025-11-20 05:54:32"},
+    { id:265, car_id:19, year:2020, tax:278787, created_at:"2025-11-20 05:54:36"},
+    { id:266, car_id:19, year:2021, tax:228001, created_at:"2025-11-20 05:54:38"},
+    { id:267, car_id:19, year:2022, tax:231517, created_at:"2025-11-20 05:54:43"},
+    { id:268, car_id:19, year:2023, tax:238034, created_at:"2025-11-20 05:54:53"},
+    { id:269, car_id:19, year:2024, tax:244549, created_at:"2025-11-20 05:54:57"},
+    { id:270, car_id:19, year:2025, tax:251066, created_at:"2025-11-20 05:55:00"},
+    { id:271, car_id:20, year:2005, tax:306536, created_at:"2025-11-20 05:55:50"},
+    { id:272, car_id:20, year:2006, tax:320413, created_at:"2025-11-20 05:55:55"},
+    { id:273, car_id:20, year:2007, tax:334287, created_at:"2025-11-20 05:56:38"},
+    { id:274, car_id:20, year:2008, tax:348161, created_at:"2025-11-20 05:56:44"},
+    { id:275, car_id:20, year:2009, tax:362037, created_at:"2025-11-20 05:56:50"},
+    { id:276, car_id:20, year:2010, tax:375912, created_at:"2025-11-20 05:56:54"},
+    { id:277, car_id:20, year:2011, tax:389786, created_at:"2025-11-20 05:56:57"},
+    { id:278, car_id:20, year:2012, tax:402340, created_at:"2025-11-20 05:57:02"},
+    { id:279, car_id:20, year:2013, tax:417537, created_at:"2025-11-20 05:57:07"},
+    { id:280, car_id:20, year:2014, tax:431412, created_at:"2025-11-20 05:57:18"},
+    { id:281, car_id:20, year:2015, tax:0, created_at:"2025-11-20 05:57:20"},
+    { id:282, car_id:20, year:2016, tax:445287, created_at:"2025-11-20 05:57:25"},
+    { id:283, car_id:20, year:2017, tax:459161, created_at:"2025-11-20 05:57:29"},
+    { id:284, car_id:20, year:2018, tax:473037, created_at:"2025-11-20 05:57:32"},
+    { id:285, car_id:20, year:2019, tax:486912, created_at:"2025-11-20 05:57:36"},
+    { id:286, car_id:20, year:2020, tax:500785, created_at:"2025-11-20 05:57:54"},
+    { id:287, car_id:20, year:2021, tax:403104, created_at:"2025-11-20 05:58:10"},
+    { id:288, car_id:20, year:2022, tax:413962, created_at:"2025-11-20 05:58:15"},
+    { id:289, car_id:20, year:2023, tax:424824, created_at:"2025-11-20 05:58:20"},
+    { id:290, car_id:20, year:2024, tax:435682, created_at:"2025-11-20 05:58:24"},
+    { id:291, car_id:20, year:2025, tax:1014875, created_at:"2025-11-20 05:58:32"},
+    { id:292, car_id:21, year:2005, tax:336599, created_at:"2025-11-20 05:59:21"},
+    { id:293, car_id:21, year:2006, tax:348161, created_at:"2025-11-20 05:59:27"},
+    { id:294, car_id:21, year:2007, tax:359725, created_at:"2025-11-20 05:59:33"},
+    { id:295, car_id:21, year:2008, tax:371287, created_at:"2025-11-20 05:59:37"},
+    { id:296, car_id:21, year:2009, tax:382849, created_at:"2025-11-20 05:59:43"},
+    { id:297, car_id:21, year:2010, tax:394412, created_at:"2025-11-20 05:59:46"},
+    { id:298, car_id:21, year:2011, tax:405973, created_at:"2025-11-20 05:59:50"},
+    { id:299, car_id:21, year:2012, tax:417537, created_at:"2025-11-20 05:59:55"},
+    { id:300, car_id:21, year:2013, tax:452225, created_at:"2025-11-20 06:00:20"},
+    { id:301, car_id:21, year:2014, tax:0, created_at:"2025-11-20 06:00:22"},
+    { id:302, car_id:21, year:2015, tax:0, created_at:"2025-11-20 06:00:24"},
+    { id:303, car_id:21, year:2016, tax:475349, created_at:"2025-11-20 06:00:31"},
+    { id:304, car_id:21, year:2017, tax:486912, created_at:"2025-11-20 06:00:35"},
+    { id:305, car_id:21, year:2018, tax:498474, created_at:"2025-11-20 06:00:52"},
+    { id:306, car_id:21, year:2019, tax:510063, created_at:"2025-11-20 06:00:55"},
+    { id:307, car_id:21, year:2020, tax:521599, created_at:"2025-11-20 06:01:01"},
+    { id:308, car_id:21, year:2021, tax:417538, created_at:"2025-11-20 06:01:05"},
+    { id:309, car_id:21, year:2022, tax:426633, created_at:"2025-11-20 06:01:09"},
+    { id:310, car_id:21, year:2023, tax:435682, created_at:"2025-11-20 06:01:13"},
+    { id:311, car_id:21, year:2024, tax:444733, created_at:"2025-11-20 06:01:17"},
+    { id:312, car_id:21, year:2025, tax:453783, created_at:"2025-11-20 06:01:23"},
+    { id:313, car_id:22, year:2005, tax:431412, created_at:"2025-11-20 06:02:31"},
+    { id:314, car_id:22, year:2006, tax:445287, created_at:"2025-11-20 06:02:36"},
+    { id:315, car_id:22, year:2007, tax:459161, created_at:"2025-11-20 06:02:41"},
+    { id:316, car_id:22, year:2008, tax:473037, created_at:"2025-11-20 06:02:45"},
+    { id:317, car_id:22, year:2009, tax:48912, created_at:"2025-11-20 06:02:49"},
+    { id:318, car_id:22, year:2010, tax:500785, created_at:"2025-11-20 06:02:52"},
+    { id:319, car_id:22, year:2011, tax:514662, created_at:"2025-11-20 06:02:58"},
+    { id:320, car_id:22, year:2012, tax:528535, created_at:"2025-11-20 06:03:06"},
+    { id:321, car_id:22, year:2013, tax:542412, created_at:"2025-11-20 06:03:12"},
+    { id:322, car_id:22, year:2014, tax:556285, created_at:"2025-11-20 06:03:17"},
+    { id:323, car_id:22, year:2015, tax:0, created_at:"2025-11-20 06:03:18"},
+    { id:324, car_id:22, year:2016, tax:570160, created_at:"2025-11-20 06:03:21"},
+    { id:326, car_id:22, year:2017, tax:584036, created_at:"2025-11-20 06:04:10"},
+    { id:327, car_id:22, year:2018, tax:498474, created_at:"2025-11-20 06:04:17"},
+    { id:334, car_id:22, year:2019, tax:611785, created_at:"2025-11-20 06:11:12"},
+    { id:335, car_id:22, year:2020, tax:625660, created_at:"2025-11-20 06:12:21"},
+    { id:336, car_id:22, year:2021, tax:500841, created_at:"2025-11-20 06:12:27"},
+    { id:337, car_id:22, year:2022, tax:426633, created_at:"2025-11-20 06:12:57"},
+    { id:338, car_id:22, year:2023, tax:522562, created_at:"2025-11-20 06:13:01"},
+    { id:339, car_id:22, year:2024, tax:444733, created_at:"2025-11-20 06:13:08"},
+    { id:340, car_id:22, year:2025, tax:544281, created_at:"2025-11-20 06:13:12"},
+    { id:341, car_id:23, year:2005, tax:167788, created_at:"2025-11-20 06:14:00"},
+    { id:342, car_id:23, year:2006, tax:195538, created_at:"2025-11-20 06:14:06"},
+    { id:343, car_id:23, year:2007, tax:223286, created_at:"2025-11-20 06:14:09"},
+    { id:344, car_id:23, year:2008, tax:351037, created_at:"2025-11-20 06:14:12"},
+    { id:345, car_id:23, year:2009, tax:278787, created_at:"2025-11-20 06:14:14"},
+    { id:346, car_id:23, year:2010, tax:306536, created_at:"2025-11-20 06:14:17"},
+    { id:347, car_id:23, year:2011, tax:334287, created_at:"2025-11-20 06:14:20"},
+    { id:348, car_id:23, year:2012, tax:251037, created_at:"2025-11-20 06:14:59"},
+    { id:349, car_id:23, year:2013, tax:389786, created_at:"2025-11-20 06:15:09"},
+    { id:350, car_id:23, year:2014, tax:417537, created_at:"2025-11-20 06:15:13"},
+    { id:351, car_id:23, year:2015, tax:445287, created_at:"2025-11-20 06:15:17"},
+    { id:352, car_id:23, year:2016, tax:445287, created_at:"2025-11-20 06:15:23"},
+    { id:353, car_id:23, year:2017, tax:473037, created_at:"2025-11-20 06:15:34"},
+    { id:354, car_id:23, year:2018, tax:500785, created_at:"2025-11-20 06:15:39"},
+    { id:355, car_id:23, year:2019, tax:528535, created_at:"2025-11-20 06:15:46"},
+    { id:356, car_id:23, year:2020, tax:556285, created_at:"2025-11-20 06:15:50"},
+    { id:357, car_id:23, year:2021, tax:457403, created_at:"2025-11-20 06:15:54"},
+    { id:358, car_id:23, year:2022, tax:479123, created_at:"2025-11-20 06:16:01"},
+    { id:359, car_id:23, year:2023, tax:500841, created_at:"2025-11-20 06:16:06"},
+    { id:360, car_id:23, year:2024, tax:522562, created_at:"2025-11-20 06:16:09"},
+    { id:361, car_id:23, year:2025, tax:544281, created_at:"2025-11-20 06:16:13"},
+    { id:362, car_id:24, year:2011, tax:96918, created_at:"2025-11-20 06:17:15"},
+    { id:363, car_id:24, year:2012, tax:101745, created_at:"2025-11-20 06:17:18"},
+    { id:364, car_id:24, year:2013, tax:106575, created_at:"2025-11-20 06:17:22"},
+    { id:365, car_id:24, year:2014, tax:111406, created_at:"2025-11-20 06:17:24"},
+    { id:366, car_id:24, year:2015, tax:116235, created_at:"2025-11-20 06:17:27"},
+    { id:367, car_id:24, year:2016, tax:121065, created_at:"2025-11-20 06:17:30"},
+    { id:368, car_id:24, year:2017, tax:105126, created_at:"2025-11-20 06:17:34"},
+    { id:369, car_id:25, year:2005, tax:77218, created_at:"2025-11-20 06:18:16"},
+    { id:370, car_id:25, year:2006, tax:88078, created_at:"2025-11-20 06:18:19"},
+    { id:371, car_id:25, year:2007, tax:98937, created_at:"2025-11-20 06:18:21"},
+    { id:372, car_id:25, year:2008, tax:109797, created_at:"2025-11-20 06:18:26"},
+    { id:373, car_id:25, year:2009, tax:120656, created_at:"2025-11-20 06:18:29"},
+    { id:374, car_id:25, year:2010, tax:131516, created_at:"2025-11-20 06:18:33"},
+    { id:375, car_id:25, year:2011, tax:142377, created_at:"2025-11-20 06:18:36"},
+    { id:376, car_id:25, year:2012, tax:153236, created_at:"2025-11-20 06:18:40"},
+    { id:377, car_id:25, year:2013, tax:164097, created_at:"2025-11-20 06:18:43"},
+    { id:378, car_id:25, year:2014, tax:174955, created_at:"2025-11-20 06:18:54"},
+    { id:379, car_id:25, year:2015, tax:0, created_at:"2025-11-20 06:18:56"},
+    { id:380, car_id:25, year:2016, tax:185817, created_at:"2025-11-20 06:19:03"},
+    { id:381, car_id:25, year:2017, tax:196676, created_at:"2025-11-20 06:19:08"},
+    { id:382, car_id:25, year:2018, tax:207535, created_at:"2025-11-20 06:19:14"},
+    { id:383, car_id:25, year:2019, tax:218395, created_at:"2025-11-20 06:19:18"},
+    { id:384, car_id:25, year:2020, tax:229256, created_at:"2025-11-20 06:19:22"},
+    { id:385, car_id:25, year:2021, tax:173784, created_at:"2025-11-20 06:19:25"},
+    { id:386, car_id:25, year:2022, tax:181628, created_at:"2025-11-20 06:19:29"},
+    { id:387, car_id:25, year:2023, tax:189473, created_at:"2025-11-20 06:19:44"},
+    { id:388, car_id:25, year:2024, tax:197318, created_at:"2025-11-20 06:19:49"},
+    { id:389, car_id:25, year:2025, tax:205161, created_at:"2025-11-20 06:19:52"},
+    { id:390, car_id:26, year:2005, tax:142377, created_at:"2025-11-20 06:20:37"},
+    { id:391, car_id:26, year:2006, tax:147806, created_at:"2025-11-20 06:20:48"},
+    { id:392, car_id:26, year:2007, tax:153236, created_at:"2025-11-20 06:20:54"},
+    { id:393, car_id:26, year:2008, tax:158667, created_at:"2025-11-20 06:20:57"},
+    { id:394, car_id:26, year:2009, tax:164097, created_at:"2025-11-20 06:21:00"},
+    { id:395, car_id:26, year:2010, tax:169526, created_at:"2025-11-20 06:21:04"},
+    { id:396, car_id:26, year:2011, tax:174955, created_at:"2025-11-20 06:21:06"},
+    { id:397, car_id:26, year:2012, tax:180386, created_at:"2025-11-20 06:21:14"},
+    { id:398, car_id:26, year:2013, tax:185817, created_at:"2025-11-20 06:21:19"},
+    { id:399, car_id:26, year:2014, tax:191245, created_at:"2025-11-20 06:21:22"},
+    { id:400, car_id:26, year:2015, tax:0, created_at:"2025-11-20 06:21:24"},
+    { id:401, car_id:26, year:2016, tax:235771, created_at:"2025-11-20 06:21:30"},
+    { id:402, car_id:26, year:2017, tax:242288, created_at:"2025-11-20 06:21:34"},
+    { id:403, car_id:26, year:2018, tax:248803, created_at:"2025-11-20 06:21:36"},
+    { id:404, car_id:26, year:2019, tax:255319, created_at:"2025-11-20 06:21:39"},
+    { id:405, car_id:26, year:2020, tax:261834, created_at:"2025-11-20 06:21:46"},
+    { id:406, car_id:26, year:2021, tax:0, created_at:"2025-11-20 06:21:49"},
+    { id:407, car_id:27, year:2005, tax:90394, created_at:"2025-11-20 06:23:15"},
+    { id:408, car_id:27, year:2006, tax:94358, created_at:"2025-11-20 06:23:21"},
+    { id:409, car_id:27, year:2007, tax:97662, created_at:"2025-11-20 06:23:24"},
+    { id:410, car_id:27, year:2008, tax:102286, created_at:"2025-11-20 06:23:27"},
+    { id:411, car_id:27, year:2009, tax:106252, created_at:"2025-11-20 06:23:30"},
+    { id:412, car_id:27, year:2010, tax:110216, created_at:"2025-11-20 06:23:32"},
+    { id:413, car_id:27, year:2011, tax:114180, created_at:"2025-11-20 06:23:36"},
+    { id:414, car_id:27, year:2012, tax:118145, created_at:"2025-11-20 06:23:39"},
+    { id:415, car_id:27, year:2013, tax:122108, created_at:"2025-11-20 06:23:45"},
+    { id:416, car_id:27, year:2014, tax:0, created_at:"2025-11-20 06:23:46"},
+    { id:417, car_id:27, year:2015, tax:130037, created_at:"2025-11-20 06:23:50"},
+    { id:418, car_id:27, year:2016, tax:0, created_at:"2025-11-20 06:23:52"},
+    { id:419, car_id:27, year:2017, tax:0, created_at:"2025-11-20 06:23:55"},
+    { id:420, car_id:27, year:2018, tax:0, created_at:"2025-11-20 06:23:57"},
+    { id:421, car_id:27, year:2019, tax:137964, created_at:"2025-11-20 06:24:02"},
+    { id:422, car_id:27, year:2020, tax:0, created_at:"2025-11-20 06:24:07"},
+    { id:423, car_id:27, year:2021, tax:0, created_at:"2025-11-20 06:24:10"},
+    { id:424, car_id:27, year:2022, tax:233909, created_at:"2025-11-20 06:24:14"},
+    { id:425, car_id:27, year:2023, tax:240116, created_at:"2025-11-20 06:24:17"},
+    { id:426, car_id:27, year:2024, tax:246322, created_at:"2025-11-20 06:24:22"},
+    { id:427, car_id:27, year:2025, tax:252526, created_at:"2025-11-20 06:24:25"},
+    { id:428, car_id:28, year:2005, tax:125310, created_at:"2025-11-20 06:24:54"},
+    { id:429, car_id:28, year:2006, tax:131516, created_at:"2025-11-20 06:24:59"},
+    { id:430, car_id:28, year:2007, tax:114967, created_at:"2025-11-20 06:25:05"},
+    { id:431, car_id:28, year:2008, tax:120141, created_at:"2025-11-20 06:25:11"},
+    { id:432, car_id:28, year:2009, tax:0, created_at:"2025-11-20 06:25:13"},
+    { id:433, car_id:28, year:2010, tax:153754, created_at:"2025-11-20 06:26:05"},
+    { id:434, car_id:28, year:2011, tax:0, created_at:"2025-11-20 06:26:08"},
+    { id:435, car_id:29, year:2005, tax:82934, created_at:"2025-11-20 06:28:00"},
+    { id:436, car_id:29, year:2006, tax:86383, created_at:"2025-11-20 06:28:05"},
+    { id:437, car_id:29, year:2007, tax:89833, created_at:"2025-11-20 06:28:12"},
+    { id:438, car_id:29, year:2008, tax:93283, created_at:"2025-11-20 06:28:15"},
+    { id:439, car_id:29, year:2009, tax:96732, created_at:"2025-11-20 06:28:19"},
+    { id:440, car_id:29, year:2010, tax:100181, created_at:"2025-11-20 06:28:23"},
+    { id:441, car_id:29, year:2011, tax:103632, created_at:"2025-11-20 06:28:26"},
+    { id:442, car_id:29, year:2012, tax:107082, created_at:"2025-11-20 06:28:34"},
+    { id:443, car_id:29, year:2013, tax:110531, created_at:"2025-11-20 06:28:38"},
+    { id:444, car_id:29, year:2014, tax:113982, created_at:"2025-11-20 06:28:42"},
+    { id:445, car_id:29, year:2015, tax:117432, created_at:"2025-11-20 06:28:46"},
+    { id:446, car_id:29, year:2016, tax:123181, created_at:"2025-11-20 06:28:49"},
+    { id:447, car_id:29, year:2017, tax:124330, created_at:"2025-11-20 06:28:52"},
+    { id:448, car_id:29, year:2018, tax:127780, created_at:"2025-11-20 06:28:56"},
+    { id:449, car_id:29, year:2019, tax:131230, created_at:"2025-11-20 06:28:59"},
+    { id:450, car_id:29, year:2020, tax:134679, created_at:"2025-11-20 06:29:09"},
+    { id:451, car_id:29, year:2021, tax:138130, created_at:"2025-11-20 06:29:20"},
+    { id:452, car_id:29, year:2022, tax:141580, created_at:"2025-11-20 06:29:23"},
+    { id:453, car_id:29, year:2023, tax:145030, created_at:"2025-11-20 06:29:33"},
+    { id:454, car_id:29, year:2024, tax:0, created_at:"2025-11-20 06:29:36"},
+    { id:455, car_id:29, year:2025, tax:0, created_at:"2025-11-20 06:29:40"},
+    { id:456, car_id:31, year:2005, tax:112120, created_at:"2026-01-20 04:27:55"},
+    { id:457, car_id:31, year:2006, tax:125975, created_at:"2026-01-20 04:28:06"},
+    { id:458, car_id:31, year:2007, tax:139829, created_at:"2026-01-20 04:28:12"},
+    { id:459, car_id:31, year:2008, tax:153683, created_at:"2026-01-20 04:28:31"},
+    { id:460, car_id:31, year:2009, tax:167537, created_at:"2026-01-20 04:28:37"},
+    { id:461, car_id:31, year:2010, tax:181391, created_at:"2026-01-20 04:28:42"},
+    { id:462, car_id:31, year:2011, tax:195244, created_at:"2026-01-20 04:28:48"},
+    { id:463, car_id:31, year:2012, tax:209099, created_at:"2026-01-20 04:28:52"},
+    { id:464, car_id:31, year:2013, tax:222952, created_at:"2026-01-20 04:28:57"},
+    { id:465, car_id:31, year:2014, tax:236807, created_at:"2026-01-20 04:29:04"},
+    { id:466, car_id:31, year:2015, tax:250661, created_at:"2026-01-20 04:29:09"},
+    { id:467, car_id:31, year:2016, tax:0, created_at:"2026-01-20 04:29:10"},
+    { id:468, car_id:31, year:2017, tax:250441, created_at:"2026-01-20 04:29:18"},
+    { id:469, car_id:31, year:2018, tax:264515, created_at:"2026-01-20 04:29:26"},
+    { id:470, car_id:31, year:2019, tax:278369, created_at:"2026-01-20 04:29:35"},
+    { id:471, car_id:31, year:2020, tax:292223, created_at:"2026-01-20 04:29:47"},
+    { id:472, car_id:31, year:2021, tax:306078, created_at:"2026-01-20 04:30:02"},
+    { id:473, car_id:31, year:2022, tax:250689, created_at:"2026-01-20 04:30:13"},
+    { id:474, car_id:31, year:2023, tax:261533, created_at:"2026-01-20 04:30:20"},
+    { id:475, car_id:31, year:2024, tax:272376, created_at:"2026-01-20 04:30:30"},
+    { id:476, car_id:31, year:2025, tax:283221, created_at:"2026-01-20 04:30:37"},
+    { id:477, car_id:31, year:2026, tax:294064, created_at:"2026-01-20 04:30:47"},
+    { id:478, car_id:32, year:2014, tax:119542, created_at:"2026-01-20 04:33:22"},
+    { id:479, car_id:32, year:2019, tax:241426, created_at:"2026-01-20 04:33:39"},
+    { id:480, car_id:32, year:2020, tax:189243, created_at:"2026-01-20 04:33:47"},
+    { id:481, car_id:32, year:2021, tax:250661, created_at:"2026-01-20 04:33:56"},
+    { id:482, car_id:33, year:2009, tax:212795, created_at:"2026-01-20 04:34:32"},
+    { id:483, car_id:33, year:2017, tax:212795, created_at:"2026-01-20 04:34:47"},
+    { id:484, car_id:33, year:2018, tax:249737, created_at:"2026-01-20 04:34:58"},
+    { id:485, car_id:33, year:2020, tax:258974, created_at:"2026-01-20 04:35:20"},
+    { id:486, car_id:33, year:2021, tax:263592, created_at:"2026-01-20 04:35:57"},
+    { id:487, car_id:34, year:2005, tax:92302, created_at:"2026-01-20 04:37:35"},
+    { id:488, car_id:34, year:2007, tax:131339, created_at:"2026-01-20 04:37:45"},
+    { id:489, car_id:34, year:2008, tax:111821, created_at:"2026-01-20 04:37:52"},
+    { id:490, car_id:34, year:2011, tax:133506, created_at:"2026-01-20 04:38:05"},
+    { id:491, car_id:34, year:2012, tax:137844, created_at:"2026-01-20 04:38:13"},
+    { id:492, car_id:34, year:2013, tax:153611, created_at:"2026-01-20 04:38:19"},
+    { id:493, car_id:34, year:2014, tax:199791, created_at:"2026-01-20 04:38:27"},
+    { id:494, car_id:34, year:2015, tax:199791, created_at:"2026-01-20 04:38:34"},
+    { id:495, car_id:34, year:2017, tax:192401, created_at:"2026-01-20 04:38:52"},
+    { id:496, car_id:34, year:2018, tax:200714, created_at:"2026-01-20 04:38:58"},
+    { id:497, car_id:34, year:2019, tax:209027, created_at:"2026-01-20 04:39:02"},
+    { id:498, car_id:34, year:2020, tax:217339, created_at:"2026-01-20 04:39:08"},
+    { id:499, car_id:34, year:2021, tax:225652, created_at:"2026-01-20 04:39:14"},
+    { id:500, car_id:34, year:2022, tax:183388, created_at:"2026-01-20 04:39:25"},
+    { id:501, car_id:34, year:2023, tax:189894, created_at:"2026-01-20 04:39:40"},
+    { id:502, car_id:34, year:2024, tax:196400, created_at:"2026-01-20 04:39:45"},
+    { id:503, car_id:34, year:2025, tax:202906, created_at:"2026-01-20 04:39:50"}
+  ]
+};
+
+/* =========================
+   UI Logic (static)
+   - renders car list
+   - shows all model rows for selected car
+   - slideshow
+   ========================= */
+
+function numberWithCommas(x) {
+  if (x == null) return "";
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const carListEl = document.getElementById('carList');
+  const modelsArea = document.getElementById('modelsArea');
+  const modelsTitle = document.getElementById('modelsTitle');
+  const modelsTableBody = document.querySelector('#modelsTable tbody');
+  const contentArea = document.getElementById('content');
+
+  // render car list (respect sort_order desc then title)
+  const carsSorted = DB.cars.slice().sort((a,b) => {
+    if (b.sort_order !== a.sort_order) return b.sort_order - a.sort_order;
+    return (a.title || '').localeCompare(b.title || '');
+  });
+
+  carListEl.innerHTML = '';
+  carsSorted.forEach(car => {
+    const li = document.createElement('li');
+    li.innerHTML = `<a href="#" class="car-link" data-car-id="${car.id}">${car.title}</a>`;
+    carListEl.appendChild(li);
+  });
+
+  // click handler (delegated)
+  carListEl.addEventListener('click', function(e) {
+    const link = e.target.closest('.car-link');
+    if (!link) return;
+    e.preventDefault();
+
+    // active state
+    document.querySelectorAll('.car-link').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+
+    const carId = Number(link.dataset.carId);
+    const car = DB.cars.find(c => c.id === carId);
+    if (!car) return;
+
+    modelsTitle.textContent = car.title;
+    modelsTableBody.innerHTML = '';
+
+    contentArea.classList.add('loading');
+
+    // simulate small delay (optional) then render
+    setTimeout(() => {
+      const rows = DB.models.filter(m => m.car_id === carId).sort((a,b)=>a.year - b.year);
+      if (rows.length === 0) {
+        modelsTableBody.innerHTML = "<tr><td colspan='2' class='empty-state'>مدلی موجود نیست.</td></tr>";
+      } else {
+        rows.forEach(r => {
+          const tr = document.createElement('tr');
+          const tdYear = document.createElement('td');
+          tdYear.style.textAlign = 'start';
+          tdYear.textContent = r.year;
+          const tdTax = document.createElement('td');
+          tdTax.style.textAlign = 'start';
+          tdTax.textContent = '؋' + numberWithCommas(r.tax);
+          tr.appendChild(tdYear);
+          tr.appendChild(tdTax);
+          modelsTableBody.appendChild(tr);
+        });
+      }
+      modelsArea.style.display = 'block';
+      // smooth scroll to models area on small screens
+      if (window.innerWidth < 768) {
+        modelsArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        // scroll offset to show under fixed header
+        const headerHeight = document.querySelector('.topbar').offsetHeight + document.querySelector('.horizontal-nav').offsetHeight;
+        const targetPosition = modelsArea.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
+        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+      }
+      contentArea.classList.remove('loading');
+    }, 120);
+  });
+
+  // auto-select first car
+  const firstLink = carListEl.querySelector('.car-link');
+  if (firstLink) firstLink.click();
+
+  // auto-scroll active car into view (horizontal nav)
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('car-link')) {
+      const link = e.target;
+      const container = document.querySelector('.cars-scroll-container');
+      const containerRect = container.getBoundingClientRect();
+      const linkRect = link.getBoundingClientRect();
+      if (linkRect.left < containerRect.left || linkRect.right > containerRect.right) {
+        link.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+  });
+
+  // ===== slideshow =====
+  (function initSlideshow(){
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const dotsContainer = document.querySelector('.dots');
+    if(!dotsContainer || slides.length === 0) return;
+    let idx = 0, interval = null;
+    slides.forEach((_, i) => {
+      const btn = document.createElement('button');
+      btn.setAttribute('aria-label', 'برو به اسلاید ' + (i+1));
+      btn.addEventListener('click', ()=> goTo(i));
+      dotsContainer.appendChild(btn);
+    });
+    const dots = dotsContainer.querySelectorAll('button');
+    function show(i){
+      slides.forEach((s,k)=> s.classList.toggle('active', k===i));
+      dots.forEach((d,k)=> d.classList.toggle('active', k===i));
+    }
+    function next(){ idx = (idx+1) % slides.length; show(idx); }
+    function goTo(i){ idx = i; show(idx); resetInterval(); }
+    function resetInterval(){ if(interval) clearInterval(interval); interval = setInterval(next,3500); }
+    show(0); resetInterval();
+    const wrap = document.querySelector('.slides');
+    if (wrap) {
+      wrap.addEventListener('mouseenter', ()=> { if(interval){ clearInterval(interval); interval = null; }});
+      wrap.addEventListener('mouseleave', ()=> { if(!interval) interval = setInterval(next,3500); });
+    }
+  })();
+
+});
+  </script>
+</body>
+</html>
